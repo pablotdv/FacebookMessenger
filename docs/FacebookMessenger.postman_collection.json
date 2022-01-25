@@ -1,0 +1,115 @@
+{
+	"info": {
+		"_postman_id": "0dedfc74-d73a-487f-81bb-88d6f0033d54",
+		"name": "FacebookMessenger",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "webhook",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:7116/api/Webhook?hub.mode=subscribe&hub.verify_token=123123&hub.challenge=ACEITO",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7116",
+					"path": [
+						"api",
+						"Webhook"
+					],
+					"query": [
+						{
+							"key": "hub.mode",
+							"value": "subscribe"
+						},
+						{
+							"key": "hub.verify_token",
+							"value": "123123"
+						},
+						{
+							"key": "hub.challenge",
+							"value": "ACEITO"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "webhook",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const hash = CryptoJS.HmacSHA1(request.data, 'ac755e6cd18fb6bcb0bfda2963ac834e').toString();\r",
+							"pm.environment.set('hash', hash);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-hub-signature",
+						"value": "sha1={{hash}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"object\": \"page\",\r\n    \"entry\": [\r\n        {\r\n            \"id\": \"{{guid}}\",\r\n            \"time\": 1643129411953,\r\n            \"messaging\": [\r\n                {\r\n                    \"sender\": {\r\n                        \"id\": \"{{guid}}\"\r\n                    },\r\n                    \"recipient\": {\r\n                        \"id\": \"{{guid}}\"\r\n                    },\r\n                    \"timestamp\": 1643129411777,\r\n                    \"message\": {\r\n                        \"mid\": \"{{guid}}\",\r\n                        \"text\": \"Novo oioi\"\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7116/api/Webhook",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7116",
+					"path": [
+						"api",
+						"Webhook"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
